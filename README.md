@@ -1,5 +1,5 @@
 # Note
-This is a fork of FIX94's triforce-nand-iso-extract that extracts an ISO out of the Japanese Mario Kart Arcade GP 1 MAME files. 
+This is a fork of FIX94's triforce-nand-iso-extract that extracts an ISO out of MAME's Triforce NAND files.
 
 # Usage
 Grab the [TriNandIsoExtractGP1.exe](bin/TriNandIsoExtractGP1.exe?raw=true) and place it into a new folder.  
@@ -7,4 +7,4 @@ Copy the .bin files of mkartagp into that folder as well.
 Run TriNandIsoExtract and wait for it to create a OUT.BIN.  
 Rename that OUT.BIN to for example game.iso, it is now ready to play.  
 
-NOTE: this revision of the game is currently unsupported on Nintendont. However, it may work with an English version of the game when a romset of it is added on MAME.
+NOTE: MAME currently has bad dumps for Mario Kart Arcade GP, so for now it only makes sense to use this application for F-Zero AX Monster Ride.
