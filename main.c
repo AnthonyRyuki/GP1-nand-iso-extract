@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 FIX94
+ * Copyright (C) 2017 FIX94, 2021 AnthonyRyuki
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -67,7 +67,7 @@ static void combine_dec(char *in1, char *in2, uint32_t inlen, FILE *out)
 
 static bool verifyFiles()
 {
-    FILE *f;
+    	FILE *f;
 	int i;
 	char name[32];
 	for(i = 1; i <= 6; i++)
