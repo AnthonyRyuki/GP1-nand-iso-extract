@@ -72,11 +72,11 @@ static bool verifyFiles()
 	char name[32];
 	for(i = 1; i <= 6; i++)
 	{
-	    if(i == 3 || i == 4)
-            sprintf(name,"ic%i5_k9f1208u0b",i);
-        else
-            sprintf(name,"ic%i_k9f1208u0b",i);
-		f = fopen(name,"rb");
+		if(i == 3 || i == 4)
+            		sprintf(name,"ic%i5_k9f1208u0b",i);
+	    	else
+            		sprintf(name,"ic%i_k9f1208u0b",i);
+	    	f = fopen(name,"rb");
 		if(!f)
 		{
 			printf("%s missing!\n", name);
