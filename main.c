@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 FIX94, 2021 AnthonyRyuki
+ * Copyright (C) 2017 FIX94
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -10,6 +10,8 @@
 #include <malloc.h>
 #include <string.h>
 #include "des.h"
+
+#define KEYS_AVAIL 3
 
 /* Triforce games are encrypted a little weird */
 static inline void do64BitSwap(void *in, void *out)
@@ -65,48 +67,102 @@ static void combine_dec(char *in1, char *in2, uint32_t inlen, FILE *out)
 	fclose(f2);
 }
 
-static bool verifyFiles()
+static bool verifyFiles(unsigned int game)
 {
-    	FILE *f;
+    FILE *f;
 	int i;
 	char name[32];
-	for(i = 1; i <= 6; i++)
+	if(game == 1)
+    {
+        for(i = 1; i <= 6; i++)
+        {
+            if(i == 3 || i == 4)
+                sprintf(name,"ic%i5_k9f1208u0b",i);
+            else
+                sprintf(name,"ic%i_k9f1208u0b",i);
+            f = fopen(name,"rb");
+            if(!f)
+            {
+                printf("%s missing!\n", name);
+                return false;
+            }
+            fseek(f,0,SEEK_END);
+            if(ftell(f) != 0x4200000)
+            {
+                printf("%s has the wrong length!\n", name);
+                fclose(f);
+                return false;
+            }
+            fclose(f);
+        }
+    }
+    else if(game == 2)
 	{
-		if(i == 3 || i == 4)
-            		sprintf(name,"ic%i5_k9f1208u0b",i);
-	    	else
-            		sprintf(name,"ic%i_k9f1208u0b",i);
-	    	f = fopen(name,"rb");
-		if(!f)
-		{
-			printf("%s missing!\n", name);
-			return false;
-		}
-		fseek(f,0,SEEK_END);
-		if(ftell(f) != 0x4200000)
-		{
-			printf("%s has the wrong length!\n", name);
-			fclose(f);
-			return false;
-		}
-		fclose(f);
+	    for(i = 1; i <= 8; i++)
+        {
+            sprintf(name,"ic%i_k9f1208u0b.bin",i);
+            f = fopen(name,"rb");
+            if(!f)
+            {
+                printf("%s missing!\n", name);
+                return false;
+            }
+            fseek(f,0,SEEK_END);
+            if(ftell(f) != 0x4200000)
+            {
+                printf("%s has the wrong length!\n", name);
+                fclose(f);
+                return false;
+            }
+            fclose(f);
+        }
+	}
+	else if(game == 3)
+	{
+	    for(i = 1; i <= 4; i++)
+        {
+            if(i == 3 || i == 4)
+                sprintf(name, "ic%is.bin",i);
+            else
+                sprintf(name,"ic%i.bin",i);
+            f = fopen(name,"rb");
+            if(!f)
+            {
+                printf("%s missing!\n", name);
+                return false;
+            }
+            fseek(f,0,SEEK_END);
+            if(ftell(f) != 0x8400000)
+            {
+                printf("%s has the wrong length!\n", name);
+                fclose(f);
+                return false;
+            }
+            fclose(f);
+        }
 	}
 	return true;
 }
 
-static const unsigned long long gp1key[1] = { 0xF767A7B0019E6751 };
-
-static const unsigned char gp1jHdr[0x40] = { /* GGPJ01 - Mario Kart Arcade GP */
-	0x47, 0x47, 0x50, 0x4A, 0x30, 0x31, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00, 0x00, 0x00 ,0x00, 0x00, 0x00, 0x00, 0x00, 0xC2, 0x33, 0x9F, 0x3D, 0x4D, 0x61, 0x72, 0x69, 0x6F, 0x20, 0x4B, 0x61, 0x72, 0x74, 0x20, 0x41,
-	0x72, 0x63, 0x61, 0x64, 0x65, 0x20, 0x47, 0x50, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-};
+static const unsigned long long trikeys[KEYS_AVAIL] = {
+    0xF767A7B0019E6751, //Mario Kart Arcade GP
+    0xCFA3131991992F2B, //Mario Kart Arcade GP 2
+    0x6DBAD0D96758FE7F, //F-Zero AX Monster Ride
+    };
 
 int main()
 {
-	printf("Mario Kart Arcade GP 1 Extract by FIX94 and Anthony Ryuki\n");
+    unsigned int game;
+	printf("Triforce NAND ISO Extract v2.0 by FIX94 and Anthony Ryuki\n");
+	printf("Games:\n1: Mario Kart Arcade GP\n2: Mario Kart Arcade GP 2\n3: F-Zero AX Monster Ride\nPlease enter game number... ");
+	scanf("%d", &game);
+	if (game == 0 || game > 3)
+    {
+        printf("Not a valid choice\n");
+        return 0;
+    }
 	printf("Checking files...\n");
-	if(!verifyFiles())
+	if(!verifyFiles(game))
 		return 0;
 	FILE *out = fopen("OUT.BIN","wb+");
 	if(!out)
@@ -114,18 +170,44 @@ int main()
 		printf("OUT.BIN not writable!\n");
 		return 0;
 	}
-	des_setkey(&DESctx, (unsigned char*)(gp1key));
-	printf("Combining and decrypting");
-	combine_dec("ic1_k9f1208u0b","ic2_k9f1208u0b",0x4200000,out);
-	printf(".");
-	combine_dec("ic35_k9f1208u0b","ic45_k9f1208u0b",0x4200000,out);
-	printf(".");
-	combine_dec("ic5_k9f1208u0b","ic6_k9f1208u0b",0x4200000,out);
-	printf(".\n");
-	printf("Adding Header\n");
-	fseek(out,0,SEEK_SET);
-	fwrite(gp1jHdr,1,0x40,out);
-	fclose(out);
-	printf("Done!\n");
+	if(game == 1)
+    {
+        des_setkey(&DESctx, (unsigned char*)(trikeys));
+        printf("Combining and decrypting");
+        combine_dec("ic1_k9f1208u0b","ic2_k9f1208u0b",0x4200000,out);
+        printf(".");
+        combine_dec("ic35_k9f1208u0b","ic45_k9f1208u0b",0x4200000,out);
+        printf(".");
+        combine_dec("ic5_k9f1208u0b","ic6_k9f1208u0b",0x293FFF0,out);
+        printf(".\n");
+        fclose(out);
+        printf("Done!\n");
+    }
+	else if(game == 2)
+    {
+        des_setkey(&DESctx, (unsigned char*)(trikeys+1));
+        printf("Combining and decrypting");
+        combine_dec("ic1_k9f1208u0b.bin","ic2_k9f1208u0b.bin",0x4200000,out);
+        printf(".");
+        combine_dec("ic3_k9f1208u0b.bin","ic4_k9f1208u0b.bin",0x4200000,out);
+        printf(".");
+        combine_dec("ic5_k9f1208u0b.bin","ic6_k9f1208u0b.bin",0x4200000,out);
+        printf(".");
+        combine_dec("ic7_k9f1208u0b.bin","ic8_k9f1208u0b.bin",0x317FFF0,out);
+        printf(".\n");
+        fclose(out);
+        printf("Done!\n");
+    }
+    else if(game == 3)
+    {
+        des_setkey(&DESctx, (unsigned char*)(trikeys+2));
+        printf("Combining and decrypting");
+        combine_dec("ic1.bin","ic2.bin",0x8400000,out);
+        printf(".");
+        combine_dec("ic3s.bin","ic4s.bin",0x5296F10,out);
+        printf(".");
+        fclose(out);
+        printf("Done!\n");
+    }
 	return 0;
 }
