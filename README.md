@@ -7,4 +7,4 @@ Copy the .bin files of mkartagp into that folder as well.
 Run TriNandIsoExtract and wait for it to create a OUT.BIN.  
 Rename that OUT.BIN to for example game.iso, it is now ready to play.  
 
-NOTE: this revision of the game is currently unsupported on Nintendont.
+NOTE: this revision of the game is currently unsupported on Nintendont. However, it may work with an English version of the game when a romset of it is added on MAME.
