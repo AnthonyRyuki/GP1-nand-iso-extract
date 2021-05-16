@@ -93,7 +93,7 @@ static bool verifyFiles(unsigned int game)
                 		fclose(f);
                 		return false;
             		}
-         	fclose(f);
+         		fclose(f);
         	}
     	}
     	else if(game == 2)
