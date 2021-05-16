@@ -205,7 +205,7 @@ int main()
         	combine_dec("ic1.bin","ic2.bin",0x8400000,out);
         	printf(".");
         	combine_dec("ic3s.bin","ic4s.bin",0x5296F10,out);
-        	printf(".");
+        	printf(".\n");
         	fclose(out);
         	printf("Done!\n");
     	}
