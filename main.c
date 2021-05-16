@@ -80,26 +80,26 @@ static bool verifyFiles(unsigned int game)
                 		sprintf(name,"ic%i5_k9f1208u0b",i);
             		else
                 		sprintf(name,"ic%i_k9f1208u0b",i);
-            	f = fopen(name,"rb");
-            	if(!f)
-            	{
-                	printf("%s missing!\n", name);
-                	return false;
-            	}
-            	fseek(f,0,SEEK_END);
-            	if(ftell(f) != 0x4200000)
-            	{
-                	printf("%s has the wrong length!\n", name);
-                	fclose(f);
-                	return false;
-            	}
+            		f = fopen(name,"rb");
+            		if(!f)
+            		{
+                		printf("%s missing!\n", name);
+                		return false;
+            		}
+            		fseek(f,0,SEEK_END);
+            		if(ftell(f) != 0x4200000)
+            		{
+                		printf("%s has the wrong length!\n", name);
+                		fclose(f);
+                		return false;
+            		}
          	fclose(f);
         	}
     	}
     	else if(game == 2)
 	{
 		for(i = 1; i <= 8; i++)
-	    		{
+	    	{
             		sprintf(name,"ic%i_k9f1208u0b.bin",i);
             		f = fopen(name,"rb");
             		if(!f)
