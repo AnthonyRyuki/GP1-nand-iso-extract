@@ -154,7 +154,7 @@ int main()
 {
 	unsigned int game;
 	printf("Triforce NAND ISO Extract v2.0 by FIX94 and Anthony Ryuki\n");
-	printf("Games:\n1: Mario Kart Arcade GP\n2: Mario Kart Arcade GP 2\n3: F-Zero AX Monster Ride\nPlease enter game number... ");
+	printf("Games:\n1: Mario Kart Arcade GP (Japan)\n2: Mario Kart Arcade GP 2 (Japan)\n3: F-Zero AX Monster Ride\nPlease enter game number... ");
 	scanf("%d", &game);
 	if (game == 0 || game > 3)
     	{
