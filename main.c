@@ -145,8 +145,8 @@ static bool verifyFiles(unsigned int game)
 }
 
 static const unsigned long long trikeys[KEYS_AVAIL] = {
-	0xF767A7B0019E6751, //Mario Kart Arcade GP
-	0xCFA3131991992F2B, //Mario Kart Arcade GP 2
+	0xF767A7B0019E6751, //Mario Kart Arcade GP (Japan)
+	0xCFA3131991992F2B, //Mario Kart Arcade GP 2 (Japan)
 	0x6DBAD0D96758FE7F, //F-Zero AX Monster Ride
 };
 
