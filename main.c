@@ -206,6 +206,14 @@ int main()
         	printf(".");
         	combine_dec("ic3s.bin","ic4s.bin",0x5296F10,out);
         	printf(".\n");
+
+        	//Fix fst.bin location
+        	fseek(out, 0x424, SEEK_SET);
+        	fputc(0x00, out);
+        	fputc(0x34, out);
+        	fputc(0x7E, out);
+        	fputc(0x00, out);
+
         	fclose(out);
         	printf("Done!\n");
     	}
