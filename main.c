@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 FIX94, 2021 Anthony Ryuki
+ * Copyright (C) 2017 FIX94, 2022 Anthony Ryuki
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -53,6 +53,34 @@ static void combine_dec(char *in1, char *in2, uint32_t inlen, FILE *out)
 	uint8_t buf1[0x200], buf2[0x200], outbuf[0x400];
 	for(i = 0; i < inlen; i+=0x200)
 	{
+	    //Skip F-Zero AX Monster Ride dummy data
+	    if (strlen(in1) == 7 && strlen(in2) == 7)
+        {
+            if (ftell(f1) == 0x84000 ||
+                ftell(f1) == 0x3E89200 ||
+                ftell(f1) == 0x40D2E00 ||
+                ftell(f1) == 0x40E3600 ||
+                ftell(f1) == 0x4339800 ||
+                ftell(f1) == 0x79FA400 ||
+                ftell(f1) == 0x7A0AC00 ||
+                ftell(f1) == 0x8091600)
+            {
+                fseek(f1,0x4200,SEEK_CUR);
+                fseek(f2,0x4200,SEEK_CUR);
+                inlen -= 0x4200;
+            }
+        }
+        else if (strlen(in1) == 8 && strlen(in2) == 8)
+        {
+            if (ftell(f1) == 0x84000 ||
+                ftell(f1) == 0x48B4000 ||
+                ftell(f1) == 0x48C4800)
+            {
+                fseek(f1,0x4200,SEEK_CUR);
+                fseek(f2,0x4200,SEEK_CUR);
+                inlen -= 0x4200;
+            }
+        }
 		fread(buf1,1,0x200,f1);
 		fread(buf2,1,0x200,f2);
 		interleave(buf1,buf2,0x200,outbuf);
@@ -153,7 +181,8 @@ static const unsigned long long trikeys[KEYS_AVAIL] = {
 int main()
 {
 	unsigned int game;
-	printf("Triforce NAND ISO Extract v2.0 by FIX94 and Anthony Ryuki\n");
+
+	printf("Triforce NAND ISO Extract v3.0 by FIX94 and Anthony Ryuki\n");
 	printf("Games:\n1: Mario Kart Arcade GP (Japan)\n2: Mario Kart Arcade GP 2 (Japan)\n3: F-Zero AX Monster Ride\nPlease enter game number... ");
 	scanf("%d", &game);
 	if (game == 0 || game > 3)
@@ -206,13 +235,6 @@ int main()
         	printf(".");
         	combine_dec("ic3s.bin","ic4s.bin",0x5296F10,out);
         	printf(".\n");
-
-        	//Fix fst.bin location
-        	fseek(out, 0x424, SEEK_SET);
-        	fputc(0x00, out);
-        	fputc(0x34, out);
-        	fputc(0x7E, out);
-        	fputc(0x00, out);
 
         	fclose(out);
         	printf("Done!\n");
