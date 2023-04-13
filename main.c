@@ -56,29 +56,29 @@ static void combine_dec(char *in1, char *in2, uint32_t inlen, FILE *out)
 	 	//Skip F-Zero AX Monster Ride dummy data
 	 	if (strlen(in1) == 7 && strlen(in2) == 7)
         	{
-            		if (ftell(f1) == 0x84000 ||
-                	ftell(f1) == 0x3E89200 ||
-                	ftell(f1) == 0x40D2E00 ||
-                	ftell(f1) == 0x40E3600 ||
-                	ftell(f1) == 0x4339800 ||
-                	ftell(f1) == 0x79FA400 ||
-                	ftell(f1) == 0x7A0AC00 ||
-                	ftell(f1) == 0x8091600)
+            		if (i == 0x84000 ||
+                	i == 0x3E89200 ||
+                	i == 0x40D2E00 ||
+                	i == 0x40E3600 ||
+                	i == 0x4339800 ||
+                	i == 0x79FA400 ||
+                	i == 0x7A0AC00 ||
+                	i == 0x8091600)
             		{
                 		fseek(f1,0x4200,SEEK_CUR);
                 		fseek(f2,0x4200,SEEK_CUR);
-                		inlen -= 0x4200;
+                		i += 0x4200;
             		}
         	}
             	else if (strlen(in1) == 8 && strlen(in2) == 8)
         	{
-            		if (ftell(f1) == 0x84000 ||
-                	ftell(f1) == 0x48B4000 ||
-                	ftell(f1) == 0x48C4800)
+            		if (i == 0x84000 ||
+                	i == 0x48B4000 ||
+                	i == 0x48C4800)
             		{
 	                	fseek(f1,0x4200,SEEK_CUR);
                 		fseek(f2,0x4200,SEEK_CUR);
-                		inlen -= 0x4200;
+                		i += 0x4200;
             		}
         	}
 		fread(buf1,1,0x200,f1);
